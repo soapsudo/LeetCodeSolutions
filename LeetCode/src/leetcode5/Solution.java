@@ -7,32 +7,33 @@ public class Solution implements Runnable{
 
     @Override
     public void run(){
-        System.out.println(longestPalindrome("aaadsdfdfd"));
+        System.out.println(longestPalindrome("a"));
     }
 
-    private String longestPalindrome(String s){
-        String longest = "";
+    private String longestPalindrome(String s) {
+        if (s == null || s.isEmpty()) return "";
+
+        int start = 0, end = 0;
 
         for (int i = 0; i < s.length(); i++) {
-            for (int j = i; j < s.length(); j++) {
-                String palindromeCheck = s.substring(i, j);
+            int len1 = expandAroundCenter(s, i, i);
+            int len2 = expandAroundCenter(s, i, i + 1);
+            int len = Math.max(len1, len2);
 
-                if(reverseString(palindromeCheck).equals(palindromeCheck) && palindromeCheck.length() >= longest.length()){
-                    longest = palindromeCheck;
-                }
+            if (len > (end - start)) {
+                start = i - (len - 1) / 2;
+                end = i + len / 2;
             }
         }
 
-        return longest;
+        return s.substring(start, end + 1);
     }
 
-    private String reverseString(String s){
-        String reverse = "";
-
-        for (int i = s.length() - 1; i >= 0; i--) {
-            reverse += s.charAt(i);
+    private int expandAroundCenter(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
         }
-
-        return reverse;
+        return right - left - 1;
     }
 }
